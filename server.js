@@ -1,0 +1,20 @@
+const express = require("express");
+const app = express();
+const authRoute = require("./routers/auth");
+const postsRoute = require("./routers/posts");
+const usersRoute = require("./routers/users");
+const cors = require("cors");
+
+require("dotenv").config();
+
+const PORT = 8000;
+
+app.use(cors());
+app.use(express.json()); //jsonを解析
+
+app.use("/api/auth", authRoute); //authRouteのエンドポイントにはすべて先頭に/api/authが付く
+app.use("/api/posts", postsRoute);
+app.use("/api/users", usersRoute);
+app.listen(PORT, () => {
+  console.log(`server is running on Port ${PORT}`);
+});
