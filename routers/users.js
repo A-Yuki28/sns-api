@@ -32,13 +32,38 @@ router.get("/profile/:userId", async (req, res) => {
         },
       },
     });
-    console.log(`profile: ${profile}`);
+
     if (!profile) {
       return res
         .status(404)
         .json({ message: "プロフィールが見つかりませんでした" });
     }
     res.status(200).json(profile);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/profile/edit/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { username, bio } = req.body;
+  try {
+    const new_username = await prisma.user.update({
+      where: { id: parseInt(userId) }, //number型に変換
+      data: {
+        username,
+      },
+    });
+    console.log(req.body);
+    const new_bio = await prisma.profile.update({
+      where: { userId: parseInt(userId) }, //number型に変換
+      data: {
+        bio,
+      },
+    });
+
+    res.status(200).json({ new_username, new_bio });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err.message });
